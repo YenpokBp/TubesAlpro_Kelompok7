@@ -247,6 +247,29 @@ func simpanKeExcel(obats [maxObat]Obat, jumlah int) {
 	fmt.Println("Data berhasil disimpan ke data_obat.xlsx")
 }
 
+func cariObatBinary(obats [maxObat]Obat, jumlah int, nama string) {
+	// Pastikan sudah diurutkan berdasarkan nama (ascending)
+	low := 0
+	high := jumlah - 1
+	for low <= high {
+		mid := (low + high) / 2
+		if obats[mid].Nama == nama {
+			o := obats[mid]
+			fmt.Println("Data ditemukan (Binary Search):")
+			fmt.Printf("%s - %s - %d - %d - %s (%s) - %02d/%02d/%04d\n",
+				o.Nama, o.Jenis, o.Harga, o.Stok,
+				o.GolonganObat.Nama, o.GolonganObat.Kode,
+				o.Kadaluarsa.Hari, o.Kadaluarsa.Bulan, o.Kadaluarsa.Tahun)
+			return
+		} else if obats[mid].Nama < nama {
+			low = mid + 1
+		} else {
+			high = mid - 1
+		}
+	}
+	fmt.Println("Obat tidak ditemukan (Binary Search).")
+}
+
 // Fungsi menu utama
 func menuUtama() {
 	for {
@@ -259,6 +282,7 @@ func menuUtama() {
 		fmt.Println("6. Urutkan Nama Obat")
 		fmt.Println("7. Urutkan Kategori Obat")
 		fmt.Println("8. Simpan Data ke Excel")
+		fmt.Println("9. Cari Obat Binary")
 		fmt.Println("0. Keluar")
 		fmt.Print("Pilih menu: ")
 		var pilihan int
@@ -305,6 +329,12 @@ func menuUtama() {
 		case 8:
 			fmt.Println("Menyimpan data ke Excel...")
 			simpanKeExcel(DaftarObat, JumlahObat)
+		case 9:	
+			var n string
+			fmt.Print("Masukkan nama obat untuk dicari: ")
+			fmt.Scanln(&n)
+			urutkanNamaObat(&DaftarObat, JumlahObat, true) // Pastikan urut dulu!
+			cariObatBinary(DaftarObat, JumlahObat, n)
 		case 0:
 			return
 		default:
